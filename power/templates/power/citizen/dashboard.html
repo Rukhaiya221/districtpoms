@@ -1,0 +1,61 @@
+{% extends "power/base.html" %}
+
+{% block title %}My Reports{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>My Outage Reports</h1>
+        <a href="{% url 'report_outage' %}" class="btn btn-accent">+ Report New Outage</a>
+    </div>
+
+    {% if reports %}
+    <div class="card">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Electrician</th>
+                        <th>Reported</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td><strong>{{ report.title }}</strong></td>
+                        <td><span class="badge badge-{{ report.priority }}">{{ report.get_priority_display }}</span></td>
+                        <td><span class="badge badge-{{ report.status }}">{{ report.get_status_display }}</span></td>
+                        <td>
+                            {% if report.assigned_electrician %}
+                                {{ report.assigned_electrician.name }}<br>
+                                <small>📞 {{ report.assigned_electrician.phone }}</small>
+                            {% else %}
+                                <em>Not assigned</em>
+                            {% endif %}
+                        </td>
+                        <td>{{ report.created_at|date:"M d, Y H:i" }}</td>
+                        <td>
+                            {% if report.assigned_electrician %}
+                                <a href="{% url 'citizen_track_outage' report.pk %}" class="btn btn-primary btn-sm">Track Live</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card empty-state">
+        <div class="icon">📋</div>
+        <h3>No Outage Reports Yet</h3>
+        <p>Report a power outage to get started.</p>
+        <a href="{% url 'report_outage' %}" class="btn btn-accent" style="margin-top: 1rem;">Report Outage</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

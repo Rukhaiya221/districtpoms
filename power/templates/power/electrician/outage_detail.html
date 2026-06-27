@@ -1,0 +1,22 @@
+{% extends "power/base.html" %}
+
+{% block title %}Outage Detail{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ outage.title }}</h2>
+    <p>{{ outage.description }}</p>
+    <p><strong>Address:</strong> {{ outage.address }}</p>
+    <p><strong>Citizen:</strong> {{ outage.citizen.username }} — {{ outage.citizen.phone }}</p>
+    <p><strong>Status:</strong> {{ outage.get_status_display }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="message">Send status/update to admin</label>
+            <textarea name="message" id="message" class="form-control" rows="3" placeholder="e.g. Reached site, repair in progress"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Send to Admin</button>
+    </form>
+</div>
+{% endblock %}

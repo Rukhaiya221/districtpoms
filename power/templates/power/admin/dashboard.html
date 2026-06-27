@@ -1,0 +1,77 @@
+{% extends "power/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Admin Dashboard</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Total Outages</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-value">{{ stats.active }}</div>
+            <div class="stat-label">Active Outages</div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-value">{{ stats.resolved }}</div>
+            <div class="stat-label">Resolved</div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-value">{{ stats.emergency }}</div>
+            <div class="stat-label">Emergency Active</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Reported Outages</h2>
+            <a href="{% url 'admin_electricians' %}" class="btn btn-primary btn-sm">Manage Electricians</a>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Citizen</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Electrician</th>
+                        <th>Reported</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for outage in outages %}
+                    <tr>
+                        <td>#{{ outage.pk }}</td>
+                        <td>
+                            <strong>{{ outage.title }}</strong>
+                            {% if outage.is_escalated %}<span class="badge badge-emergency">ESC</span>{% endif %}
+                        </td>
+                        <td>{{ outage.citizen.username }}</td>
+                        <td><span class="badge badge-{{ outage.priority }}">{{ outage.get_priority_display }}</span></td>
+                        <td><span class="badge badge-{{ outage.status }}">{{ outage.get_status_display }}</span></td>
+                        <td>{{ outage.assigned_electrician.name|default:"—" }}</td>
+                        <td>{{ outage.created_at|date:"M d, H:i" }}</td>
+                        <td>
+                            <a href="{% url 'admin_outage_detail' outage.pk %}" class="btn btn-primary btn-sm">Manage</a>
+                            {% if outage.assigned_electrician %}
+                                <a href="{% url 'admin_track_outage' outage.pk %}" class="btn btn-accent btn-sm">Track</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 2rem;">No outages reported yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "power/base.html" %}
+
+{% block title %}Report Outage{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Report Power Outage</h1>
+
+    <div class="card">
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            Click on the map or drag the marker to set your outage location precisely.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_title">Outage Title</label>
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                <label for="id_description">Description</label>
+                {{ form.description }}
+            </div>
+            <div class="form-group">
+                <label for="id_address">Address</label>
+                {{ form.address }}
+            </div>
+            <div class="form-group">
+                <label for="id_priority">Priority Level</label>
+                {{ form.priority }}
+            </div>
+
+            <div class="form-group">
+                <label>Outage Location (click map to set)</label>
+                <div id="report-map" class="map-container"></div>
+            </div>
+
+            {{ form.latitude }}
+            {{ form.longitude }}
+
+            <button type="submit" class="btn btn-accent">Submit Outage Report</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

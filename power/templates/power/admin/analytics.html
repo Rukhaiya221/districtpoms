@@ -1,0 +1,86 @@
+{% extends "power/base.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Historical Outage Analytics</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_outages }}</div>
+            <div class="stat-label">Total Outages</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-value">{{ active_count }}</div>
+            <div class="stat-label">Currently Active</div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-value">{{ resolved_count }}</div>
+            <div class="stat-label">Resolved</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ avg_resolution_hours|default:"—" }}{% if avg_resolution_hours %}h{% endif %}</div>
+            <div class="stat-label">Avg Resolution Time</div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+        <div class="card">
+            <div class="card-header"><h2>Status Breakdown</h2></div>
+            {% for item in status_breakdown %}
+            <div class="chart-bar">
+                <div class="bar-label">{{ item.status|title }}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio item.count total_outages 100 %}%;"></div>
+                </div>
+                <div class="bar-count">{{ item.count }}</div>
+            </div>
+            {% empty %}
+            <p style="color: var(--text-muted);">No data available.</p>
+            {% endfor %}
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h2>Priority Breakdown</h2></div>
+            {% for item in priority_breakdown %}
+            <div class="chart-bar">
+                <div class="bar-label">{{ item.priority|title }}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio item.count total_outages 100 %}%;"></div>
+                </div>
+                <div class="bar-count">{{ item.count }}</div>
+            </div>
+            {% empty %}
+            <p style="color: var(--text-muted);">No data available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header"><h2>Recent Outages</h2></div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for outage in recent_outages %}
+                    <tr>
+                        <td>{{ outage.title }}</td>
+                        <td><span class="badge badge-{{ outage.priority }}">{{ outage.get_priority_display }}</span></td>
+                        <td><span class="badge badge-{{ outage.status }}">{{ outage.get_status_display }}</span></td>
+                        <td>{{ outage.created_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

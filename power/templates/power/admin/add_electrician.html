@@ -1,0 +1,37 @@
+{% extends "power/base.html" %}
+
+{% block title %}Add Electrician{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Add New Electrician</h1>
+
+    <div class="card">
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            Set the electrician's current location on the map (this is their starting point for live tracking).
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_name">Full Name</label>
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                <label for="id_phone">Phone Number</label>
+                {{ form.phone }}
+            </div>
+            <div class="form-group">
+                <label for="id_employee_id">Employee ID</label>
+                {{ form.employee_id }}
+            </div>
+            <div class="form-group">
+                <label>Current Location</label>
+                <div id="electrician-map" class="map-container"></div>
+            </div>
+            {{ form.current_latitude }}
+            {{ form.current_longitude }}
+            <button type="submit" class="btn btn-primary">Add Electrician</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

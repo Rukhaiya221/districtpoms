@@ -1,0 +1,25 @@
+{% extends "power/base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Notifications</h1>
+
+    <div class="card">
+        {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                <p>{{ notification.message }}</p>
+                <div class="time">{{ notification.created_at|date:"M d, Y H:i" }}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">🔔</div>
+                <p>No notifications yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

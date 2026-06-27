@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DPOMS{% endblock %} | District Power Outage Management</title>
+    <link rel="stylesheet" href="{% static 'power/css/style.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="navbar-brand">
+            <span class="logo-icon">⚡</span>
+            DPOMS
+        </a>
+        <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+                {% if user.role == 'admin' %}
+                    <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'admin_electricians' %}">Electricians</a></li>
+                    <li><a href="{% url 'admin_analytics' %}">Analytics</a></li>
+                {% else %}
+                    <li><a href="{% url 'citizen_dashboard' %}">My Reports</a></li>
+                    <li><a href="{% url 'report_outage' %}">Report Outage</a></li>
+                    <li>
+                        <a href="{% url 'citizen_notifications' %}">
+                            Notifications
+                            {% if unread_count %}<span class="badge-notify">{{ unread_count }}</span>{% endif %}
+                        </a>
+                    </li>
+                {% endif %}
+                <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
+            {% else %}
+                <li><a href="{% url 'citizen_login' %}">Citizen Login</a></li>
+                <li><a href="{% url 'admin_login' %}">Admin Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% if messages %}
+        <div class="container" style="padding-bottom: 0;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        District Power Outage Management System &mdash; Improving Power Service Reliability
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{% static 'power/js/tracking.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

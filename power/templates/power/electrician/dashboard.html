@@ -1,0 +1,23 @@
+{% extends "power/base.html" %}
+
+{% block title %}Electrician Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Assigned Outages</h2>
+    {% if outages %}
+        <ul class="list-group">
+            {% for o in outages %}
+                <li class="list-group-item">
+                    <strong>{{ o.title }}</strong> — {{ o.get_status_display }}
+                    <div>Address: {{ o.address }}</div>
+                    <div>Citizen Phone: {{ o.citizen.phone }}</div>
+                    <a href="{% url 'electrician_outage_detail' o.pk %}" class="btn btn-sm btn-primary mt-2">Details</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No assigned outages yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

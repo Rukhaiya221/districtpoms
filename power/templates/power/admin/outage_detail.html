@@ -1,0 +1,107 @@
+{% extends "power/base.html" %}
+
+{% block title %}Outage #{{ outage.pk }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline btn-sm">← Back to Dashboard</a>
+        <h1 style="margin-top: 1rem;">Outage #{{ outage.pk }}: {{ outage.title }}</h1>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item">
+            <div class="label">Citizen</div>
+            <div class="value">{{ outage.citizen.username }} (📞 {{ outage.citizen.phone }})</div>
+        </div>
+        <div class="detail-item">
+            <div class="label">Status</div>
+            <div class="value"><span class="badge badge-{{ outage.status }}">{{ outage.get_status_display }}</span></div>
+        </div>
+        <div class="detail-item">
+            <div class="label">Priority</div>
+            <div class="value"><span class="badge badge-{{ outage.priority }}">{{ outage.get_priority_display }}</span></div>
+        </div>
+        <div class="detail-item">
+            <div class="label">Address</div>
+            <div class="value">{{ outage.address }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="label">Description</div>
+            <div class="value">{{ outage.description }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="label">Reported At</div>
+            <div class="value">{{ outage.created_at|date:"M d, Y H:i" }}</div>
+        </div>
+        {% if outage.estimated_restoration %}
+        <div class="detail-item">
+            <div class="label">Estimated Restoration</div>
+            <div class="value">{{ outage.estimated_restoration|date:"M d, Y H:i" }}</div>
+        </div>
+        {% endif %}
+        {% if outage.assigned_electrician %}
+        <div class="detail-item">
+            <div class="label">Assigned Electrician</div>
+            <div class="value">{{ outage.assigned_electrician.name }} — 📞 {{ outage.assigned_electrician.phone }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+        {% if not outage.assigned_electrician %}
+        <div class="card">
+            <div class="card-header"><h2>Assign Electrician</h2></div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="assign">
+                <div class="form-group">
+                    <label>Select Electrician</label>
+                    {{ assign_form.electrician }}
+                </div>
+                <div class="form-group">
+                    <label>Estimated Restoration Time</label>
+                    {{ assign_form.estimated_restoration }}
+                </div>
+                <button type="submit" class="btn btn-primary">Assign Electrician</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-header"><h2>Update Status</h2></div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_status">
+                <div class="form-group">
+                    <label>Status</label>
+                    {{ status_form.status }}
+                </div>
+                <div class="form-group">
+                    <label>Update ETA</label>
+                    {{ status_form.estimated_restoration }}
+                </div>
+                <button type="submit" class="btn btn-success">Update Status & Notify Citizen</button>
+            </form>
+        </div>
+
+        {% if not outage.is_escalated %}
+        <div class="card">
+            <div class="card-header"><h2>Emergency Escalation</h2></div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Escalate this outage to emergency priority for faster response.</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="escalate">
+                <button type="submit" class="btn btn-danger">Escalate to Emergency</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if outage.assigned_electrician %}
+    <div style="margin-top: 1.5rem;">
+        <a href="{% url 'admin_track_outage' outage.pk %}" class="btn btn-accent">Open Live Tracking Map</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

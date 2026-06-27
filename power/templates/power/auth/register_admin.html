@@ -1,0 +1,30 @@
+{% extends "power/base.html" %}
+
+{% block title %}Admin Registration{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <div class="auth-card">
+        <h2>🏛️ Government Admin Registration</h2>
+        <p class="subtitle">Create an admin account for outage management</p>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="form-error">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'admin_login' %}">Login here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

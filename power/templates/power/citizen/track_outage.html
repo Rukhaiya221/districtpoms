@@ -1,0 +1,55 @@
+{% extends "power/base.html" %}
+
+{% block title %}Track Electrician{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 1rem;">Live Electrician Tracking</h1>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Tracking for: <strong>{{ outage.title }}</strong></p>
+
+    <div class="map-info">
+        <div class="map-info-item">
+            <div class="label">Status</div>
+            <div class="value" id="live-status">{{ outage.get_status_display }}</div>
+        </div>
+        {% if outage.assigned_electrician %}
+        <div class="map-info-item">
+            <div class="label">Electrician</div>
+            <div class="value">{{ outage.assigned_electrician.name }}</div>
+        </div>
+        <div class="map-info-item">
+            <div class="label">Phone</div>
+            <div class="value">📞 {{ outage.assigned_electrician.phone }}</div>
+        </div>
+        {% endif %}
+        {% if outage.estimated_restoration %}
+        <div class="map-info-item">
+            <div class="label">Estimated Restoration</div>
+            <div class="value">{{ outage.estimated_restoration|date:"M d, Y H:i" }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div id="tracking-map" class="map-container"></div>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+            🔴 Red marker = Outage location &nbsp;|&nbsp; 🔵 Blue marker = Electrician location (updates every 3 seconds)
+        </p>
+    </div>
+
+    <a href="{% url 'citizen_dashboard' %}" class="btn btn-outline">← Back to My Reports</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    initTrackingMap({
+        outageLat: {{ outage.latitude }},
+        outageLng: {{ outage.longitude }},
+        outageAddress: "{{ outage.address|escapejs }}",
+        trackUrl: "{% url 'track_location_api' outage.pk %}",
+    });
+});
+</script>
+{% endblock %}

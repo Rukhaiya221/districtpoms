@@ -1,0 +1,74 @@
+{% extends "power/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>⚡ District Power Outage Management System</h1>
+    <p>Improving Power Service Reliability Through Smart Outage Management</p>
+</section>
+
+<div class="container">
+    <div class="portal-cards">
+        <div class="portal-card">
+            <div class="icon">🏛️</div>
+            <h3>Government Admin Portal</h3>
+            <p>Monitor outages, manage electricians, assign tasks, and track restoration progress in real-time.</p>
+            <div class="btn-group" style="justify-content: center;">
+                <a href="{% url 'admin_login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'admin_register' %}" class="btn btn-outline">Register</a>
+            </div>
+        </div>
+        <div class="portal-card">
+            <div class="icon">👤</div>
+            <h3>Citizen Portal</h3>
+            <p>Report power outages, receive live updates, track your assigned electrician, and get restoration ETAs.</p>
+            <div class="btn-group" style="justify-content: center;">
+                <a href="{% url 'citizen_login' %}" class="btn btn-accent">Login</a>
+                <a href="{% url 'citizen_register' %}" class="btn btn-outline">Register</a>
+            </div>
+        </div>
+        <div class="portal-card">
+            <div class="icon">🔌</div>
+            <h3>Electrician Portal</h3>
+            <p>Login or register to view assigned outages, see citizen details, and send status updates to admins.</p>
+            <div class="btn-group" style="justify-content: center;">
+                <a href="{% url 'electrician_login' %}" class="btn btn-accent">Login</a>
+                <a href="{% url 'electrician_register' %}" class="btn btn-outline">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 3rem;">
+        <div class="card-header">
+            <h2>System Features</h2>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <div class="label">Real-time Reporting</div>
+                <div class="value">Citizens report outages instantly with map location</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Live Tracking</div>
+                <div class="value">Track electrician location on interactive maps</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Status Updates</div>
+                <div class="value">Automated notifications on every status change</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Admin Dashboard</div>
+                <div class="value">Centralized monitoring and response management</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">ETA Updates</div>
+                <div class="value">Estimated restoration time for citizens</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Analytics</div>
+                <div class="value">Historical outage data and performance reports</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
